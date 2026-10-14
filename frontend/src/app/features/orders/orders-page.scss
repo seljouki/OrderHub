@@ -1,0 +1,29 @@
+.filters {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 4px;
+  margin-bottom: 16px;
+  background: var(--line-soft);
+  border-radius: var(--radius);
+
+  button {
+    border: 0;
+    background: none;
+    padding: 6px 14px;
+    border-radius: var(--radius-sm);
+    font: 500 13px var(--font);
+    color: var(--ink-soft);
+    cursor: pointer;
+
+    &:hover {
+      color: var(--ink);
+    }
+
+    &.active {
+      background: var(--panel);
+      color: var(--ink);
+      box-shadow: 0 1px 2px rgba(28, 43, 58, 0.12);
+    }
+  }
+}

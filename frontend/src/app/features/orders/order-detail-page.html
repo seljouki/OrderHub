@@ -1,0 +1,105 @@
+<div class="page">
+  <a routerLink="/orders" class="back">All orders</a>
+
+  @if (error()) {
+    <div class="alert" role="alert">{{ error() }}</div>
+  }
+
+  @if (order(); as o) {
+    <header class="page-head">
+      <div>
+        <h1>{{ o.orderNumber }}</h1>
+        <p>
+          {{ o.customer.name }}, placed {{ o.createdAt | date: "MMM d, y 'at' h:mm a" }} by
+          {{ o.createdBy }}
+        </p>
+      </div>
+      <div class="actions">
+        @for (a of actions(); track a.status) {
+          <button
+            type="button"
+            class="btn"
+            [class.btn-primary]="!a.danger"
+            [class.btn-danger]="a.danger"
+            [disabled]="updating()"
+            (click)="changeStatus(a.status)"
+          >
+            {{ a.label }}
+          </button>
+        }
+      </div>
+    </header>
+
+    @if (o.status === 'CANCELLED') {
+      <div class="cancelled panel">
+        <app-status-badge status="CANCELLED" />
+        This order was cancelled and its stock returned to inventory.
+      </div>
+    } @else {
+      <ol class="track panel" aria-label="Order progress">
+        @for (step of steps(); track step.status) {
+          <li
+            [class.done]="step.done"
+            [class.current]="step.current"
+            [attr.aria-current]="step.current ? 'step' : null"
+          >
+            <span class="node" aria-hidden="true"></span>
+            <span class="step-label">{{ step.label }}</span>
+          </li>
+        }
+      </ol>
+    }
+
+    <div class="grid">
+      <section class="panel">
+        <div class="panel-head"><h2>Items</h2></div>
+        <div class="table-wrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th class="right">Qty</th>
+                <th class="right">Unit price</th>
+                <th class="right">Line total</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of o.items; track item.productId) {
+                <tr>
+                  <td>
+                    {{ item.productName }}
+                    <div class="muted">{{ item.sku }}</div>
+                  </td>
+                  <td class="right num">{{ item.quantity }}</td>
+                  <td class="right num">{{ item.unitPrice | currency: 'USD' }}</td>
+                  <td class="right num">{{ item.lineTotal | currency: 'USD' }}</td>
+                </tr>
+              }
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="3" class="right">Total</td>
+                <td class="right num total">{{ o.totalAmount | currency: 'USD' }}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </section>
+
+      <aside class="panel side">
+        <h2>Customer</h2>
+        <p>
+          <strong>{{ o.customer.name }}</strong
+          ><br />
+          <a [href]="'mailto:' + o.customer.email">{{ o.customer.email }}</a>
+        </p>
+        <h2>Notes</h2>
+        <p class="notes">{{ o.notes || 'No notes.' }}</p>
+        <h2>Last updated</h2>
+        <p>{{ o.updatedAt | date: 'medium' }}</p>
+      </aside>
+    </div>
+  } @else if (!error()) {
+    <p class="muted">Loading order…</p>
+  }
+</div>

@@ -1,0 +1,100 @@
+<div class="page">
+  <header class="page-head">
+    <div>
+      <h1>New order</h1>
+      <p>Stock is reserved as soon as the order is placed.</p>
+    </div>
+  </header>
+
+  @if (error()) {
+    <div class="alert" role="alert">{{ error() }}</div>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="submit()" novalidate class="layout">
+    <section class="panel body">
+      <div class="field customer">
+        <label for="customer">Customer</label>
+        <select id="customer" class="select" formControlName="customerId">
+          <option [ngValue]="null" disabled>Choose a customer</option>
+          @for (c of customers(); track c.id) {
+            <option [ngValue]="c.id">{{ c.name }}</option>
+          }
+        </select>
+        @if (form.controls.customerId.touched && form.controls.customerId.invalid) {
+          <span class="error">Choose who this order is for.</span>
+        }
+      </div>
+
+      <h2>Items</h2>
+      <div formArrayName="lines" class="lines">
+        @for (line of lines.controls; track line; let i = $index) {
+          <div class="line" [formGroupName]="i">
+            <div class="field">
+              <label [for]="'product-' + i">Product</label>
+              <select [id]="'product-' + i" class="select" formControlName="productId">
+                <option [ngValue]="null" disabled>Choose a product</option>
+                @for (p of products(); track p.id) {
+                  <option [ngValue]="p.id" [disabled]="p.stockQuantity === 0">
+                    {{ p.name }} ({{ p.stockQuantity }} in stock)
+                  </option>
+                }
+              </select>
+            </div>
+            <div class="field qty">
+              <label [for]="'qty-' + i">Quantity</label>
+              <input
+                [id]="'qty-' + i"
+                class="input num"
+                type="number"
+                min="1"
+                formControlName="quantity"
+              />
+            </div>
+            <div class="line-total num">{{ lineTotal(i) | currency: 'USD' }}</div>
+            <button
+              type="button"
+              class="btn remove"
+              [disabled]="lines.length === 1"
+              (click)="removeLine(i)"
+              [attr.aria-label]="'Remove item ' + (i + 1)"
+            >
+              Remove
+            </button>
+          </div>
+        }
+      </div>
+      <button type="button" class="btn" (click)="addLine()">Add another item</button>
+
+      <div class="field notes">
+        <label for="notes">Notes for the warehouse</label>
+        <textarea
+          id="notes"
+          class="textarea"
+          formControlName="notes"
+          placeholder="Optional"
+        ></textarea>
+      </div>
+    </section>
+
+    <aside class="panel summary">
+      <h2>Summary</h2>
+      <div class="total">
+        <span>Total</span>
+        <strong class="num">{{ total() | currency: 'USD' }}</strong>
+      </div>
+
+      @for (p of overStocked(); track p.id) {
+        <p class="stock-alert warn">Only {{ p.stockQuantity }} of {{ p.name }} in stock.</p>
+      }
+
+      <button
+        type="submit"
+        class="btn btn-primary place"
+        [disabled]="submitting() || overStocked().length > 0"
+      >
+        {{ submitting() ? 'Placing order…' : 'Place order' }}
+      </button>
+      <a routerLink="/orders" class="btn cancel">Cancel</a>
+    </aside>
+  </form>
+</div>

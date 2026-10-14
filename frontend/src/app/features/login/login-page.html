@@ -1,0 +1,57 @@
+<div class="login">
+  <section class="intro">
+    <div class="brand"><span class="brand-mark" aria-hidden="true"></span> OrderHub</div>
+    <p class="pitch">Stock, customers and orders in one place, with every unit accounted for.</p>
+  </section>
+
+  <section class="form-side">
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <h1>Sign in</h1>
+      <p class="muted">Use your work email and password.</p>
+
+      @if (error()) {
+        <div class="alert" role="alert">{{ error() }}</div>
+      }
+
+      <div class="field">
+        <label for="email">Email</label>
+        <input
+          id="email"
+          class="input"
+          type="email"
+          formControlName="email"
+          autocomplete="username"
+        />
+        @if (form.controls.email.touched && form.controls.email.invalid) {
+          <span class="error">Enter a valid email address.</span>
+        }
+      </div>
+
+      <div class="field">
+        <label for="password">Password</label>
+        <input
+          id="password"
+          class="input"
+          type="password"
+          formControlName="password"
+          autocomplete="current-password"
+        />
+        @if (form.controls.password.touched && form.controls.password.invalid) {
+          <span class="error">Enter your password.</span>
+        }
+      </div>
+
+      <button type="submit" class="btn btn-primary wide" [disabled]="submitting()">
+        {{ submitting() ? 'Signing in…' : 'Sign in' }}
+      </button>
+
+      <div class="demo">
+        Trying the demo? Fill in the
+        <button type="button" class="btn-link btn" (click)="useDemo('admin')">admin</button>
+        or
+        <button type="button" class="btn-link btn" (click)="useDemo('staff')">staff</button>
+        account.
+      </div>
+    </form>
+  </section>
+</div>

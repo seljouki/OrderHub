@@ -1,0 +1,149 @@
+<div class="page">
+  <header class="page-head">
+    <div>
+      <h1>Overview</h1>
+      <p>The last 30 days of sales and what needs restocking.</p>
+    </div>
+    <a class="btn btn-primary" routerLink="/orders/new">New order</a>
+  </header>
+
+  @if (error()) {
+    <div class="alert" role="alert">{{ error() }}</div>
+  }
+
+  @if (summary(); as s) {
+    <section class="panel kpis" aria-label="Key figures">
+      <div>
+        <span class="kpi-label">Revenue, 30 days</span>
+        <span class="kpi-value num">{{
+          s.revenueLast30Days | currency: 'USD' : 'symbol' : '1.0-0'
+        }}</span>
+      </div>
+      <div>
+        <span class="kpi-label">Orders, 30 days</span>
+        <span class="kpi-value num">{{ s.ordersLast30Days | number }}</span>
+      </div>
+      <div>
+        <span class="kpi-label">Products in catalogue</span>
+        <span class="kpi-value num">{{ s.activeProducts | number }}</span>
+      </div>
+      <div>
+        <span class="kpi-label">Customers</span>
+        <span class="kpi-value num">{{ s.customers | number }}</span>
+      </div>
+    </section>
+
+    <div class="grid">
+      <section class="panel chart-panel">
+        <div class="panel-head"><h2>Daily revenue, last 14 days</h2></div>
+        <div class="chart">
+          <svg
+            [attr.viewBox]="'0 0 ' + bars().length * 24 + ' ' + (chartHeight + 4)"
+            preserveAspectRatio="none"
+            role="img"
+            aria-label="Bar chart of daily revenue"
+          >
+            @for (bar of bars(); track bar.date) {
+              <rect
+                [attr.x]="bar.x + 4"
+                [attr.y]="chartHeight - bar.height + 2"
+                width="16"
+                [attr.height]="bar.height"
+                rx="2"
+              >
+                <title>{{ bar.date | date: 'MMM d' }}: {{ bar.revenue | currency: 'USD' }}</title>
+              </rect>
+            }
+          </svg>
+          <div class="axis">
+            <span>{{ bars()[0]?.date | date: 'MMM d' }}</span>
+            <span>Today</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head"><h2>Orders by status</h2></div>
+        <div class="mix">
+          <div class="mix-bar" aria-hidden="true">
+            @for (item of statusMix(); track item.status) {
+              @if (item.count > 0) {
+                <span
+                  [class]="'seg s-' + item.status.toLowerCase()"
+                  [style.width.%]="item.share"
+                ></span>
+              }
+            }
+          </div>
+          <ul>
+            @for (item of statusMix(); track item.status) {
+              <li>
+                <span [class]="'dot s-' + item.status.toLowerCase()"></span>
+                {{ item.label }}
+                <span class="num count">{{ item.count }}</span>
+              </li>
+            }
+          </ul>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head"><h2>Best sellers</h2></div>
+        @if (s.topProducts.length) {
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th class="right">Units</th>
+                <th class="right">Revenue</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (p of s.topProducts; track p.productId) {
+                <tr>
+                  <td>
+                    {{ p.name }}
+                    <div class="muted sku">{{ p.sku }}</div>
+                  </td>
+                  <td class="right num">{{ p.unitsSold }}</td>
+                  <td class="right num">{{ p.revenue | currency: 'USD' }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        } @else {
+          <p class="empty">No sales yet. Place an order to see best sellers here.</p>
+        }
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Needs restocking</h2>
+          <a routerLink="/products">All products</a>
+        </div>
+        @if (s.lowStock.length) {
+          <table class="table">
+            <tbody>
+              @for (p of s.lowStock; track p.id) {
+                <tr>
+                  <td>
+                    {{ p.name }}
+                    <div class="muted sku">{{ p.sku }}</div>
+                  </td>
+                  <td class="right">
+                    <span class="stock-alert num">{{ p.stockQuantity }} left</span>
+                    <div class="muted sku">reorder at {{ p.reorderLevel }}</div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        } @else {
+          <p class="empty">Every product is above its reorder level.</p>
+        }
+      </section>
+    </div>
+  } @else if (!error()) {
+    <p class="muted">Loading overview…</p>
+  }
+</div>

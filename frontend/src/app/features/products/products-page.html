@@ -1,0 +1,99 @@
+<div class="page">
+  <header class="page-head">
+    <div>
+      <h1>Products</h1>
+      <p>Catalogue, prices and stock on hand.</p>
+    </div>
+    @if (auth.isAdmin()) {
+      <button type="button" class="btn btn-primary" (click)="editing.set(null)">Add product</button>
+    }
+  </header>
+
+  <div class="toolbar">
+    <input
+      class="input search"
+      type="search"
+      placeholder="Search by name or SKU"
+      aria-label="Search products"
+      [formControl]="search"
+    />
+  </div>
+
+  @if (error()) {
+    <div class="alert" role="alert">{{ error() }}</div>
+  }
+
+  <section class="panel">
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>SKU</th>
+            <th class="right">Price</th>
+            <th class="right">In stock</th>
+            @if (auth.isAdmin()) {
+              <th class="right"><span class="visually-hidden">Actions</span></th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @for (p of page()?.content ?? []; track p.id) {
+            <tr>
+              <td>
+                <strong>{{ p.name }}</strong>
+                @if (p.description) {
+                  <div class="muted">{{ p.description }}</div>
+                }
+              </td>
+              <td class="num">{{ p.sku }}</td>
+              <td class="right num">{{ p.price | currency: 'USD' }}</td>
+              <td class="right num">
+                @if (p.lowStock) {
+                  <span class="stock-alert">{{ p.stockQuantity }}</span>
+                } @else {
+                  {{ p.stockQuantity }}
+                }
+              </td>
+              @if (auth.isAdmin()) {
+                <td class="right actions">
+                  <button type="button" class="btn" (click)="editing.set(p)">Edit</button>
+                  <button type="button" class="btn btn-danger" (click)="archive(p)">Archive</button>
+                </td>
+              }
+            </tr>
+          } @empty {
+            @if (!loading()) {
+              <tr>
+                <td colspan="5" class="empty">
+                  @if (search.value) {
+                    No products match “{{ search.value }}”.
+                  } @else {
+                    The catalogue is empty. Add your first product to start taking orders.
+                  }
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+    @if (page(); as pg) {
+      <app-pager
+        [page]="pg.page"
+        [size]="pg.size"
+        [totalElements]="pg.totalElements"
+        [totalPages]="pg.totalPages"
+        (pageChange)="goTo($event)"
+      />
+    }
+  </section>
+</div>
+
+@if (editing() !== undefined) {
+  <app-product-form-dialog
+    [product]="editing() ?? null"
+    (saved)="onSaved($event)"
+    (cancelled)="editing.set(undefined)"
+  />
+}

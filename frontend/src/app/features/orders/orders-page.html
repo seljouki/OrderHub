@@ -1,0 +1,80 @@
+<div class="page">
+  <header class="page-head">
+    <div>
+      <h1>Orders</h1>
+      <p>Every order, newest first.</p>
+    </div>
+    <a class="btn btn-primary" routerLink="/orders/new">New order</a>
+  </header>
+
+  <div class="filters" role="group" aria-label="Filter by status">
+    @for (f of filters; track f.label) {
+      <button
+        type="button"
+        [class.active]="status() === f.value"
+        [attr.aria-pressed]="status() === f.value"
+        (click)="filter(f.value)"
+      >
+        {{ f.label }}
+      </button>
+    }
+  </div>
+
+  @if (error()) {
+    <div class="alert" role="alert">{{ error() }}</div>
+  }
+
+  <section class="panel">
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Order</th>
+            <th>Customer</th>
+            <th>Status</th>
+            <th class="right">Items</th>
+            <th class="right">Total</th>
+            <th>Placed</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (o of page()?.content ?? []; track o.id) {
+            <tr class="clickable" (click)="open(o)">
+              <td>
+                <a [routerLink]="['/orders', o.id]" (click)="$event.stopPropagation()">{{
+                  o.orderNumber
+                }}</a>
+              </td>
+              <td>{{ o.customerName }}</td>
+              <td><app-status-badge [status]="o.status" /></td>
+              <td class="right num">{{ o.itemCount }}</td>
+              <td class="right num">{{ o.totalAmount | currency: 'USD' }}</td>
+              <td class="num">{{ o.createdAt | date: 'MMM d, y, h:mm a' }}</td>
+            </tr>
+          } @empty {
+            @if (!loading()) {
+              <tr>
+                <td colspan="6" class="empty">
+                  @if (status()) {
+                    No orders with this status.
+                  } @else {
+                    No orders yet. <a routerLink="/orders/new">Place the first one</a>.
+                  }
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+    @if (page(); as pg) {
+      <app-pager
+        [page]="pg.page"
+        [size]="pg.size"
+        [totalElements]="pg.totalElements"
+        [totalPages]="pg.totalPages"
+        (pageChange)="goTo($event)"
+      />
+    }
+  </section>
+</div>

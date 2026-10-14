@@ -1,0 +1,80 @@
+.login {
+  display: grid;
+  grid-template-columns: minmax(280px, 5fr) 7fr;
+  min-height: 100vh;
+}
+
+.intro {
+  background: var(--ink);
+  color: #fff;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font: 600 22px var(--font-condensed);
+}
+
+.brand-mark {
+  width: 16px;
+  height: 16px;
+  background: var(--marker);
+  border-radius: 2px;
+}
+
+.pitch {
+  font: 500 clamp(1.75rem, 3vw, 2.5rem) / 1.15 var(--font-condensed);
+  max-width: 14ch;
+  margin: 0;
+}
+
+.form-side {
+  display: grid;
+  place-items: center;
+  padding: 40px 24px;
+}
+
+form {
+  width: min(380px, 100%);
+
+  h1 {
+    margin-bottom: 4px;
+  }
+
+  > .muted {
+    margin: 0 0 24px;
+  }
+}
+
+.wide {
+  width: 100%;
+  justify-content: center;
+  height: 40px;
+}
+
+.demo {
+  margin-top: 20px;
+  font-size: 13px;
+  color: var(--ink-soft);
+
+  .btn-link {
+    font-size: 13px;
+    display: inline;
+  }
+}
+
+@media (max-width: 760px) {
+  .login {
+    grid-template-columns: 1fr;
+  }
+
+  .intro {
+    gap: 24px;
+    padding: 24px;
+  }
+}

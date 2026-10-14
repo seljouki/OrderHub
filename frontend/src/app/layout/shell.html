@@ -1,0 +1,30 @@
+<div class="layout">
+  <aside class="rail">
+    <a class="brand" routerLink="/dashboard">
+      <span class="brand-mark" aria-hidden="true"></span>
+      OrderHub
+    </a>
+
+    <nav aria-label="Main">
+      @for (item of nav; track item.path) {
+        <a [routerLink]="item.path" routerLinkActive="active" ariaCurrentWhenActive="page">
+          {{ item.label }}
+        </a>
+      }
+    </nav>
+
+    @if (auth.user(); as user) {
+      <div class="account">
+        <div class="who">
+          <strong>{{ user.fullName }}</strong>
+          <span>{{ user.role === 'ADMIN' ? 'Administrator' : 'Staff' }}</span>
+        </div>
+        <button type="button" class="signout" (click)="auth.logout()">Sign out</button>
+      </div>
+    }
+  </aside>
+
+  <main class="content">
+    <router-outlet />
+  </main>
+</div>

@@ -1,0 +1,415 @@
+/* Fonts are self-hosted via @fontsource (see angular.json "styles"): no third-party requests. */
+
+/*
+ * OrderHub design tokens.
+ * Slate surfaces, navy rail, and one accent: floor-marking yellow, used only
+ * for stock alerts and "you are here" markers so it always means "look here".
+ */
+:root {
+  --ink: #1c2b3a;
+  --ink-soft: #4a5a6a;
+  --ink-faint: #7b8794;
+  --surface: #f3f5f7;
+  --panel: #ffffff;
+  --line: #d9dee3;
+  --line-soft: #e8ecef;
+  --marker: #f2c230;
+  --marker-soft: #fdf3cf;
+
+  --blue: #2d6cdf;
+  --blue-soft: #e6eefc;
+  --green: #23784a;
+  --green-soft: #e3f3ea;
+  --red: #b42318;
+  --red-soft: #fbe9e7;
+  --violet: #6941c6;
+  --violet-soft: #efeafb;
+
+  --font: 'IBM Plex Sans', system-ui, sans-serif;
+  --font-condensed: 'IBM Plex Sans Condensed', 'IBM Plex Sans', system-ui, sans-serif;
+
+  --radius-sm: 4px;
+  --radius: 8px;
+  --rail-width: 232px;
+
+  color-scheme: light;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+}
+
+body {
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-condensed);
+  font-weight: 600;
+  line-height: 1.2;
+  margin: 0;
+}
+
+h1 {
+  font-size: 1.75rem;
+}
+
+h2 {
+  font-size: 1.125rem;
+}
+
+a {
+  color: var(--blue);
+}
+
+:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+}
+
+.muted {
+  color: var(--ink-faint);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ---------- Page scaffolding ---------- */
+
+.page {
+  max-width: 1180px;
+  padding: 32px 40px 64px;
+}
+
+.page-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+
+  p {
+    margin: 4px 0 0;
+    color: var(--ink-soft);
+  }
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.toolbar {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+/* ---------- Buttons ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--ink);
+  font: 500 14px var(--font);
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+
+  &:hover:not(:disabled) {
+    border-color: var(--ink-faint);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.btn-primary {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #fff;
+
+  &:hover:not(:disabled) {
+    background: #2a3d50;
+    border-color: #2a3d50;
+  }
+}
+
+.btn-danger {
+  color: var(--red);
+
+  &:hover:not(:disabled) {
+    border-color: var(--red);
+  }
+}
+
+.btn-link {
+  border: 0;
+  background: none;
+  color: var(--blue);
+  padding: 0;
+  height: auto;
+}
+
+/* ---------- Forms ---------- */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+
+  label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-soft);
+  }
+
+  .hint,
+  .error {
+    font-size: 12px;
+  }
+
+  .error {
+    color: var(--red);
+  }
+}
+
+.input,
+.select,
+.textarea {
+  height: 38px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--panel);
+  color: var(--ink);
+  font: 14px var(--font);
+  width: 100%;
+
+  &:focus {
+    outline: none;
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px var(--blue-soft);
+  }
+
+  &.ng-invalid.ng-touched {
+    border-color: var(--red);
+  }
+}
+
+.textarea {
+  height: auto;
+  min-height: 80px;
+  padding: 10px 12px;
+  resize: vertical;
+}
+
+.search {
+  max-width: 320px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 16px;
+
+  .span-2 {
+    grid-column: span 2;
+  }
+}
+
+.alert {
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--red-soft);
+  color: var(--red);
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+/* ---------- Tables ---------- */
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+
+  th {
+    text-align: left;
+    font-weight: 500;
+    color: var(--ink-faint);
+    font-size: 13px;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--line);
+    background: #fafbfc;
+  }
+
+  td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--line-soft);
+    vertical-align: middle;
+  }
+
+  tr:last-child td {
+    border-bottom: 0;
+  }
+
+  .right {
+    text-align: right;
+  }
+
+  tbody tr.clickable {
+    cursor: pointer;
+
+    &:hover td {
+      background: #f8fafb;
+    }
+  }
+}
+
+.table td.actions {
+  white-space: nowrap;
+
+  .btn {
+    height: 30px;
+    padding: 0 10px;
+    font-size: 13px;
+  }
+
+  .btn + .btn {
+    margin-left: 6px;
+  }
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+.empty {
+  padding: 48px 20px;
+  text-align: center;
+  color: var(--ink-soft);
+}
+
+/* ---------- Badges ---------- */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* The one accent: a floor-marking tag for stock that needs reordering. */
+.stock-alert {
+  display: inline-block;
+  padding: 1px 8px;
+  border-left: 4px solid var(--marker);
+  background: var(--marker-soft);
+  font-size: 12px;
+  font-weight: 500;
+  color: #6b5200;
+}
+
+/* ---------- Dialog ---------- */
+
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(28, 43, 58, 0.45);
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  z-index: 40;
+}
+
+.dialog {
+  width: min(560px, 100%);
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
+  background: var(--panel);
+  border-radius: var(--radius);
+  padding: 24px;
+
+  h2 {
+    margin-bottom: 20px;
+  }
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+@media (max-width: 720px) {
+  .page {
+    padding: 20px 16px 48px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+
+    .span-2 {
+      grid-column: auto;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
